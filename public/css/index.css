@@ -1,0 +1,13 @@
+.mdl-data-table {
+    width: 80%;
+}
+
+.mdl-data-table__cell--non-numeric.mdl-data-table__cell--non-numeric,
+.mdl-data-table td {
+    text-align: center;
+}
+
+#new-btn {
+    margin: 10px;
+    align-self: flex-start;
+}

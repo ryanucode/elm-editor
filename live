@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#elm_modules=`printf "\
+  #\nelm/Designer/Main.elm\
+  #\nelm/Designer/Dashboard.elm\
+  #\nelm/Student/Main.elm"`
+
+#elm live $elm_modules --output=public/elm/elm.js --open
+#elm live elm/Main.elm --output=public/elm/elm.js --open
+elm live src/Main.elm --output=public/elm/elm.js --open

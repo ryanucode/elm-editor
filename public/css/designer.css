@@ -1,0 +1,23 @@
+.title {
+  max-width: unset;
+  width: unset;
+}
+
+.monospace textarea {
+  font-family: monospace;
+}
+
+.title > input {
+  font-size: 64px;
+}
+
+.editor {
+  width: 100%;
+}
+
+.assertion {
+    padding: 0.5em;
+    background-color: rgb(244, 67, 54);
+    margin: 0.2em;
+    color: white;
+}
