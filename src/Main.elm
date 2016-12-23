@@ -27,46 +27,59 @@ import Editor
 
 main =
     Html.program
-    { init = init
-    , view = view
-    , update = update
-    , subscriptions = subs
-    }
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subs
+        }
 
 -- Model
 type alias Model = 
-  { mdl : Material.Model
-  , edState : Editor.State
-  , text : String
-  }
+    { mdl : Material.Model
+    , edState : Editor.State
+    , text : String
+    }
 
 initModel : Model 
 initModel =
-  { mdl = Material.model
-  , edState = Editor.defaultState
-  , text = "# Here is an Amazing Editor\nThis is why it is amazing:\n  * it works!\n  * it's made by Ryan!\n  * it's functional!"
-  }
- 
+    { mdl = Material.model
+    , edState = Editor.defaultState
+    , text = "# Here is an Amazing Editor\nThis is why it is amazing:\n  * it works!\n  * it's made by Ryan!\n  * it's functional!"
+    }
+
 init : (Model, Cmd Msg)
 init = (initModel, Material.init Mdl)
 
-edConfig : Editor.Config
-edConfig = Editor.defaultConfig
+edConfig : Editor.Config Msg
+edConfig = Editor.defaultConfig {toMsg = UpdateEditorState, inputCmd = UpdateText}
 
 -- Messages
-type Msg = NoOp
-         | Mdl (Material.Msg Msg)
+type Msg
+    = NoOp
+    | UpdateEditorState Editor.State
+    | UpdateText Int String
+    | Mdl (Material.Msg Msg)
 
 
 -- Update
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
-  case msg of
-    NoOp ->
-        (model, Cmd.none)
-        
-    Mdl msg_ ->
-        Material.update msg_ model
+    let
+        debug = Debug.log "msg" msg
+        noop = (model, Cmd.none)
+    in
+        case msg of
+            NoOp ->
+                (model, Cmd.none)
+            UpdateEditorState state ->
+                noop
+            UpdateText line val ->
+                let
+                    text = Editor.updateAtLine model.text line val
+                in
+                    ({model | text = text}, Cmd.none)
+            Mdl msg_ ->
+                Material.update msg_ model
 
 
 -- Subscriptions
@@ -82,18 +95,18 @@ editor = Editor.editor edConfig
 viewMain : Model -> Html Msg
 viewMain model =
     node "main" []
-    [ editor model.edState model.text
-    , div [Attr.class "preview"] [Markdown.toHtml [] model.text]
-    , hr [] []
-    , div [Attr.class "debug"] [text <| toString model]
-    ]
+        [ editor model.edState model.text
+        , div [Attr.class "preview"] [Markdown.toHtml [] model.text]
+        , hr [] []
+        , div [Attr.class "debug"] [text <| toString model]
+        ]
 
 view : Model -> Html Msg
 view model = 
-  Layout.render Mdl model.mdl 
-    [ Layout.fixedHeader ]
-    { header = []
-    , drawer = []
-    , tabs = ( [], [] )
-    , main = [ viewMain model ]
-    }
+    Layout.render Mdl model.mdl 
+        [ Layout.fixedHeader ]
+        { header = []
+        , drawer = []
+        , tabs = ( [], [] )
+        , main = [ viewMain model ]
+        }
